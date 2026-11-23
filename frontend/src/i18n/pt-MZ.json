@@ -1,0 +1,16 @@
+{
+  "errors": {
+    "INVALID_CREDENTIALS": "E-mail ou senha incorrectos.",
+    "ACCOUNT_LOCKED": "Conta bloqueada temporariamente. Tente de novo dentro de 15 minutos.",
+    "NOT_AUTHENTICATED": "A sua sessão terminou. Entre de novo.",
+    "INVALID_TOKEN": "A sua sessão terminou. Entre de novo.",
+    "INVALID_REFRESH_TOKEN": "A sua sessão terminou. Entre de novo.",
+    "PERMISSION_DENIED": "Não tem permissão para esta acção.",
+    "COMPANY_ACCESS_DENIED": "Não tem acesso a esta empresa.",
+    "NO_COMPANY": "Escolha uma empresa primeiro.",
+    "EMAIL_IN_USE": "Este e-mail já está registado.",
+    "ROLE_EXISTS": "Já existe um papel com esse nome.",
+    "VALIDATION_ERROR": "Verifique os campos assinalados.",
+    "UNKNOWN_ERROR": "Ocorreu um erro. Tente de novo."
+  }
+}
