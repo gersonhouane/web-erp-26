@@ -1,0 +1,58 @@
+# Ambiente de desenvolvimento.
+#   docker compose up            -> postgres, redis e API em http://localhost:8000/api/v1/docs
+#   docker compose --profile web up  -> também o Next.js e o nginx em http://localhost:8080
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./deploy/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      retries: 10
+
+  redis:
+    image: redis:7
+    ports:
+      - "6379:6379"
+
+  api:
+    build: ./backend
+    environment:
+      WEBERP_DATABASE_URL: postgresql+psycopg://weberp:weberp@postgres:5432/weberp
+      WEBERP_JWT_SECRET: dev-only-secret-change-me-in-production-0000
+      WEBERP_CORS_ORIGINS: '["http://localhost:3000","http://localhost:8080"]'
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+
+  web:
+    profiles: ["web"]
+    build: ./frontend
+    environment:
+      WEBERP_API_URL: http://api:8000/api/v1
+      NEXTAUTH_URL: http://localhost:8080
+      NEXTAUTH_SECRET: dev-only-nextauth-secret-change-me-0000
+    depends_on:
+      - api
+
+  nginx:
+    profiles: ["web"]
+    image: nginx:1.27
+    volumes:
+      - ./deploy/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+    ports:
+      - "8080:80"
+    depends_on:
+      - api
+      - web
+
+volumes:
+  pgdata:
